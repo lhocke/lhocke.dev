@@ -891,7 +891,7 @@ Actual (verified live via `curl` against `https://lhocke.dev`):
 - `resume.pdf` → HTTP 200.
 - Canonical = `https://lhocke.dev/`, and the bare apex `https://lhocke.dev` resolves to `https://lhocke.dev/` — trailing-slash behaviour is clean (the item flagged at the Task 1 code review).
 - HTTPS served via Cloudflare.
-- Lighthouse: **not run** — it requires headless Chrome, avoided per Dylan's Chrome preference. Optional follow-up (run in Firefox's dev tools, or skip; an Astro static site is expected to score high).
+- Lighthouse (headless Chrome, run 2026-06-14 at Dylan's request): **Performance 100 / Accessibility 100 / Best Practices 100 / SEO 100** — FCP/LCP/Speed-Index all 0.9 s, TBT 0 ms, CLS 0. The initial run surfaced two issues, both fixed: (a) faint label/footer **contrast** — `--color-faint` darkened `#a8a29e` → `#78716c` (4.59:1, passes AA); (b) a **robots-txt** flag that turned out to be a transient deploy-window read. Note: `/robots.txt` is served by Cloudflare's zone-level **Content Signals / managed robots.txt** (search engines allowed, AI-training crawlers disallowed — kept intentionally). A redundant `public/robots.txt` briefly added during this pass was removed (Cloudflare's managed block already allows search crawlers).
 
 ---
 
