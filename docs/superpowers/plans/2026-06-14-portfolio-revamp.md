@@ -775,7 +775,7 @@ git commit -m "Responsive and accessibility polish"
 **Files:**
 - Create: `scripts/verify-site.mjs`
 
-This is the automated enforcement of spec §2's hard constraints. It scans the built HTML for forbidden job-search signals and asserts required content is present. Write it, run it, and fix any violations it surfaces.
+This is the automated enforcement of spec §2's hard constraints. It scans two surfaces of the built HTML: **visible text** (tags stripped) for forbidden job-search signals, and the **raw HTML including `href` attributes** for required content/links. The two surfaces matter — Task 6's contact links use friendly labels (`Email`, `LinkedIn`, …), so the email/LinkedIn URLs live only in `href`s; scanning raw HTML for required content lets us keep clean labels while still asserting the links are present. Write it, run it, and fix any violations it surfaces.
 
 - [ ] **Step 1: Create `scripts/verify-site.mjs`**
 
@@ -785,7 +785,11 @@ import { join } from "node:path";
 
 const DIST = "dist";
 const html = readFileSync(join(DIST, "index.html"), "utf8");
+// `text` = visible text only (tags stripped) — used to scan for job-search signals.
 const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLowerCase();
+// `raw` = full HTML incl. href attributes — used to confirm required links/content
+// are present even when they sit behind friendly labels (e.g. "Email" → mailto:).
+const raw = html.toLowerCase();
 
 const errors = [];
 
@@ -809,7 +813,7 @@ const REQUIRED = [
   "linkedin.com/in/dylan-ishihara",
 ];
 for (const needle of REQUIRED) {
-  if (!text.includes(needle.toLowerCase())) errors.push(`MISSING required content: "${needle}"`);
+  if (!raw.includes(needle.toLowerCase())) errors.push(`MISSING required content: "${needle}"`);
 }
 
 // 3. Résumé asset shipped and linked.
@@ -844,50 +848,50 @@ git commit -m "Add employer-safe content verifier"
 
 **Files:** none (deploy + DNS configuration)
 
-⚠️ This task touches the **live `lhocke.dev` domain** — an outward-facing, hard-to-reverse action. Get Dylan's explicit go-ahead before the custom-domain cutover (Step 4). Deploy to the Pages preview URL first and confirm it looks right.
+✅ **As-built (completed 2026-06-14, with Dylan's explicit go-ahead).** This task touched the live `lhocke.dev` domain, so it was done in observable stages: preview → verify → production → verify → custom domain → verify. The old `lhocke.dev` was already returning HTTP 530 (no working origin), so nothing functional was replaced.
 
-- [ ] **Step 1: Push the repo to GitHub**
+- [x] **Step 1: Push the repo to GitHub** — public (sanitized site; showing you build is on-message).
 
-Confirm with Dylan whether the repo should be **public** (reasonable — the site is sanitized and showing you build is on-message) or **private**. Then:
 ```bash
-gh repo create lhocke/portfolio --source=. --push --<public|private>
+gh repo create lhocke/lhocke.dev --public --source=. --remote=origin --push \
+  --description "Personal site — lhocke.dev (Astro + Tailwind)"
 ```
-Expected: repo created and `main` pushed.
+Actual: created public repo `github.com/lhocke/lhocke.dev`, `main` pushed. (Named `lhocke.dev`, not the `portfolio` placeholder originally drafted.)
 
-- [ ] **Step 2: Create the Cloudflare Pages project and deploy the build**
+- [x] **Step 2: Create the Cloudflare Pages project + deploy a preview**
 
-Use Wrangler (Cloudflare's first-party CLI — see the `wrangler` skill for current syntax). Build then deploy the static output:
+Wrangler is the first-party CLI. Pre-create the project so deploys are non-interactive, then deploy to a non-production `preview` branch for a throwaway URL (production slot stays empty, domain untouched):
+```bash
+npx wrangler pages project create lhocke-dev --production-branch=main
+npm run build
+npx wrangler pages deploy dist --project-name=lhocke-dev --branch=preview
+```
+Actual: project `lhocke-dev` created; preview deployed. (Project named `lhocke-dev` — Pages project names can't contain dots, so not `lhocke.dev`/`lhocke-portfolio`.)
+
+- [x] **Step 3: Verify the preview deployment**
+
+Actual: `https://preview.lhocke-dev.pages.dev` — HTTP 200; name + all four project links present; `resume.pdf` → 200; no "athena" string anywhere; no job-search signals. Verified via `curl` against the live URL (cert provisioned within ~20s of first deploy).
+
+- [x] **Step 4: Production deploy + attach the custom domain** (done on Dylan's explicit go-ahead)
+
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=lhocke-portfolio
+npx wrangler pages deploy dist --project-name=lhocke-dev --branch=main   # production
 ```
-Expected: Wrangler uploads `dist/` and prints a `*.pages.dev` preview URL.
+Then attach the custom domain **in the Cloudflare dashboard** (Workers & Pages → `lhocke-dev` → Custom domains → add `lhocke.dev`). Dashboard rather than CLI/API because wrangler 4.x has **no `pages domain` command** and there was **no `CLOUDFLARE_API_TOKEN`** in the environment (do not go hunting for the stored OAuth token — out of scope). Same-account zone → DNS record + TLS cert auto-provisioned.
+Actual: production live at `lhocke-dev.pages.dev`; Dylan attached `lhocke.dev` via the dashboard.
 
-- [ ] **Step 3: Verify the preview deployment**
+**Follow-up (2026-06-14): switched to Git integration, in place.** The `lhocke-dev` project was connected to the `lhocke/lhocke.dev` repo via the Cloudflare dashboard — **same project, custom domain retained, no migration or downtime.** (Cloudflare *does* allow connecting an existing Direct Upload project to Git in place, despite the docs not documenting that direction — confirmed empirically, not assumed.) Build config: command `npm run build`, output `dist`, production branch `main`, Node pinned to **22** via `.nvmrc`.
+**Deploys are now push-to-deploy:** a push to `main` triggers `npm run build` on Cloudflare and deploys to production; pushes to other branches get preview deployments. Manual `wrangler pages deploy` is no longer needed (and the project can no longer be switched back to Direct Upload — Git integration is one-way).
 
-Open the printed `*.pages.dev` URL.
-Expected: the full site renders; résumé downloads; all four project links work; no job-search signals.
+- [x] **Step 5: Final post-deploy verification**
 
-```
-Actual (preview URL + what you observed):
-```
-
-- [ ] **Step 4: Connect the custom domain `lhocke.dev` (requires Dylan's go-ahead)**
-
-Recommended ongoing setup: in the Cloudflare dashboard, connect the GitHub repo to the Pages project (build command `npm run build`, output directory `dist`) so pushes auto-deploy; then add `lhocke.dev` as a custom domain on the Pages project. Because the domain is already Cloudflare-managed, DNS records are created automatically.
-Expected: `https://lhocke.dev` serves the new site over HTTPS.
-
-```
-Actual (confirm lhocke.dev resolves to the new site):
-```
-
-- [ ] **Step 5: Final post-deploy verification**
-
-Run a production check: visit `https://lhocke.dev`, confirm résumé link, project links, and run Lighthouse (Chrome DevTools → Lighthouse, or `npx lighthouse https://lhocke.dev`). Target: Performance, Accessibility, Best Practices, SEO all ≥ 95 (Astro static should hit this easily).
-
-```
-Actual (Lighthouse scores: Perf / A11y / BP / SEO):
-```
+Actual (verified live via `curl` against `https://lhocke.dev`):
+- HTTP 200 serving the new site; name + all four project links present; no "athena"; no job-search signals.
+- `resume.pdf` → HTTP 200.
+- Canonical = `https://lhocke.dev/`, and the bare apex `https://lhocke.dev` resolves to `https://lhocke.dev/` — trailing-slash behaviour is clean (the item flagged at the Task 1 code review).
+- HTTPS served via Cloudflare.
+- Lighthouse: **not run** — it requires headless Chrome, avoided per Dylan's Chrome preference. Optional follow-up (run in Firefox's dev tools, or skip; an Astro static site is expected to score high).
 
 ---
 
