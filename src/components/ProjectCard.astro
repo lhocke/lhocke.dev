@@ -1,0 +1,25 @@
+---
+interface Props {
+  title: string;
+  tag: string;
+  blurb: string;
+  href?: string;
+  linkLabel?: string;
+}
+const { title, tag, blurb, href, linkLabel } = Astro.props;
+const isExternal = href?.startsWith("http");
+---
+<div class="rounded-xl border border-line bg-white p-5">
+  <span class="text-xs font-semibold tracking-wide uppercase text-accent">{tag}</span>
+  <h3 class="font-serif text-xl font-semibold mt-2 mb-2">{title}</h3>
+  <p class="text-sm leading-relaxed text-muted mb-3">{blurb}</p>
+  {href && (
+    <a
+      href={href}
+      class="text-sm font-semibold text-accent hover:underline"
+      {...isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+    >
+      {linkLabel ?? "Read more"} →
+    </a>
+  )}
+</div>

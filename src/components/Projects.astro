@@ -1,0 +1,23 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+<section id="projects" class="scroll-mt-8">
+  <hr class="border-line my-12" />
+  <p class="text-xs font-semibold tracking-widest uppercase text-faint mb-5">Selected Projects</p>
+  <div class="grid gap-4 sm:grid-cols-2">
+    {projects.map((p) => (
+      <ProjectCard
+        title={p.data.title}
+        tag={p.data.tag}
+        blurb={p.data.blurb}
+        href={p.data.href}
+        linkLabel={p.data.linkLabel}
+      />
+    ))}
+  </div>
+</section>
