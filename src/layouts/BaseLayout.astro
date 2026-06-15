@@ -1,0 +1,40 @@
+---
+import "@fontsource-variable/inter";
+import "@fontsource-variable/newsreader";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Dylan Ishihara — Developer-turned-support-leader who never stopped building",
+  description = "Dylan Ishihara is a full-stack developer turned technical-support leader who builds and evaluates production AI tooling. Oakland, CA.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="bg-paper text-ink font-sans antialiased">
+    <main class="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+      <slot />
+    </main>
+  </body>
+</html>
