@@ -9,7 +9,7 @@
   --color-paper: #fafaf9;   /* page background */
   --color-ink: #1c1917;     /* primary text */
   --color-muted: #57534e;   /* secondary text */
-  --color-faint: #a8a29e;   /* tertiary / labels */
+  --color-faint: #78716c;   /* tertiary / labels — WCAG AA (4.59:1 on paper) */
   --color-line: #e7e5e4;    /* hairline rules */
   --color-accent: #0f766e;  /* evergreen teal — links + kicker */
 }
