@@ -1,0 +1,26 @@
+---
+const links = [
+  { label: "Email", href: "mailto:dylan.ishihara@gmail.com" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/dylan-ishihara" },
+  { label: "GitHub", href: "https://github.com/lhocke" },
+  { label: "Résumé", href: "/resume.pdf", accent: true },
+];
+---
+<section id="contact" class="scroll-mt-8 text-center">
+  <hr class="border-line my-12" />
+  <h2 class="font-serif text-3xl font-medium tracking-tight mb-3">Let's talk.</h2>
+  <p class="text-base leading-relaxed text-muted max-w-md mx-auto mb-5">
+    Always happy to trade notes on AI tooling, support, or the craft of building things that last.
+  </p>
+  <div class="flex flex-wrap justify-center gap-6 text-sm">
+    {links.map((l) => (
+      <a
+        href={l.href}
+        class={l.accent ? "font-semibold text-accent hover:underline" : "text-muted hover:text-ink transition-colors"}
+        {...l.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {}}
+      >
+        {l.label}
+      </a>
+    ))}
+  </div>
+</section>

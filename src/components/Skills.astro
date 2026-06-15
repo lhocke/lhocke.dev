@@ -1,0 +1,30 @@
+---
+const groups = [
+  {
+    name: "Engineering",
+    items: ["TypeScript / JavaScript", "Python", "React / React Native", "Node.js / Express", "SQL · Postgres · Mongo", "REST APIs · OAuth/SSO"],
+  },
+  {
+    name: "Support & Ops",
+    items: ["Escalation management", "SLA design", "Incident coverage", "Team onboarding", "Distributed leadership", "Integration delivery"],
+  },
+  {
+    name: "Domains",
+    items: ["Enterprise SaaS", "Fintech / digital banking", "AI tooling & agents", "MCP servers", "Model evaluation"],
+  },
+];
+---
+<section id="skills" class="scroll-mt-8">
+  <hr class="border-line my-12" />
+  <p class="text-xs font-semibold tracking-widest uppercase text-faint mb-5">Skills</p>
+  <div class="grid gap-8 sm:grid-cols-3">
+    {groups.map((g) => (
+      <div>
+        <h4 class="text-sm font-bold text-ink mb-3">{g.name}</h4>
+        <ul class="space-y-1.5">
+          {g.items.map((i) => <li class="text-sm text-muted">{i}</li>)}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
