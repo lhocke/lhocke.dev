@@ -3,7 +3,11 @@ import { join } from "node:path";
 
 const DIST = "dist";
 const html = readFileSync(join(DIST, "index.html"), "utf8");
+// `text` = visible text only (tags stripped) — used to scan for job-search signals.
 const text = html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLowerCase();
+// `raw` = full HTML incl. href attributes — used to confirm required links/content
+// are present even when they sit behind friendly labels (e.g. "Email" → mailto:).
+const raw = html.toLowerCase();
 
 const errors = [];
 
@@ -27,7 +31,7 @@ const REQUIRED = [
   "linkedin.com/in/dylan-ishihara",
 ];
 for (const needle of REQUIRED) {
-  if (!text.includes(needle.toLowerCase())) errors.push(`MISSING required content: "${needle}"`);
+  if (!raw.includes(needle.toLowerCase())) errors.push(`MISSING required content: "${needle}"`);
 }
 
 // 3. Résumé asset shipped and linked.
