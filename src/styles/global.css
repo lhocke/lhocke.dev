@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Newsreader Variable", ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Palette — warm neutral with one restrained accent */
+  --color-paper: #fafaf9;   /* page background */
+  --color-ink: #1c1917;     /* primary text */
+  --color-muted: #57534e;   /* secondary text */
+  --color-faint: #a8a29e;   /* tertiary / labels */
+  --color-line: #e7e5e4;    /* hairline rules */
+  --color-accent: #0f766e;  /* evergreen teal — links + kicker */
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}

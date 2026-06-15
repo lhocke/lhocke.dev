@@ -1,0 +1,22 @@
+{
+  "name": "lhocke-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify": "astro build && node scripts/verify-site.mjs"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/newsreader": "^5.2.10",
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.6",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3"
+  }
+}
