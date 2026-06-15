@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import ZorkTerminal from "../components/ZorkTerminal.astro";
+
+// Flip to true once a sanitized public version of zork-workflow (no dev notes) exists.
+const SHOW_SOURCE = false;
+const SOURCE_URL = "https://github.com/lhocke/zork-workflow";
+---
+<BaseLayout
+  title="Zork, ZIL → TypeScript — Dylan Ishihara"
+  description="A playable port of the 1977 mainframe game Zork from its native ZIL to modern TypeScript, running live in the browser."
+>
+  <a href="/" class="font-mono text-xs text-faint transition-colors hover:text-ink">← back to lhocke.dev</a>
+
+  <header class="mt-6 mb-5">
+    <h1 class="font-serif text-3xl font-semibold text-ink">Zork, ZIL → TypeScript</h1>
+    <p class="mt-1 font-serif text-accent italic">porting a 1977 mainframe game to the modern web</p>
+  </header>
+
+  <p class="mb-6 leading-relaxed text-muted">
+    I ported the open-sourced Zork from its native ZIL — a Lisp dialect for a long-dead
+    virtual machine — to modern TypeScript, working largely autonomously with an AI coding
+    agent, and deployed it live. The terminal below is the real thing, running in your browser.
+  </p>
+
+  <ZorkTerminal src="https://zork.lhocke.dev" />
+
+  <ul class="mt-5 flex list-none flex-wrap gap-2 p-0">
+    <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">1977 original</li>
+    <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">ZIL → TypeScript</li>
+    <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">AI-assisted port</li>
+    <li class="rounded-full border border-line px-3 py-1 font-mono text-xs text-muted">Runs client-side</li>
+  </ul>
+
+  <p class="mt-6 flex gap-5 font-mono text-sm">
+    <a href="https://zork.lhocke.dev" target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">Open full screen ↗</a>
+    {SHOW_SOURCE && (
+      <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">View source ↗</a>
+    )}
+  </p>
+
+  <Footer />
+</BaseLayout>

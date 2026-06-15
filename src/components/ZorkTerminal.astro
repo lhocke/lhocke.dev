@@ -1,0 +1,54 @@
+---
+interface Props {
+  src?: string;
+  title?: string;
+}
+const {
+  src = "https://zork.lhocke.dev",
+  title = "Zork — a playable text adventure, running live",
+} = Astro.props;
+const host = src.replace(/^https?:\/\//, "");
+---
+<div class="overflow-hidden rounded-xl border border-line bg-[#0c0a09]" data-zork-src={src} data-zork-title={title}>
+  <div data-zork-poster>
+    <div class="px-4 py-3 font-mono text-[13px] leading-relaxed text-[#a8a29e] select-none" aria-hidden="true">
+      ZORK I: The Great Underground Empire<br />
+      West of House<br />
+      You are standing in an open field west of a white house…<br />
+      <span class="text-[#4ade80]">&gt;</span>
+    </div>
+    <div class="flex flex-col items-center gap-2 px-4 pt-4 pb-8">
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-2 font-mono text-sm text-paper transition-opacity hover:opacity-90"
+        data-zork-play
+      >
+        ▶ Start the game
+      </a>
+      <span class="font-mono text-xs text-[#78716c]">loads {host}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const exhibit = document.querySelector("[data-zork-src]");
+  const play = exhibit && exhibit.querySelector("[data-zork-play]");
+  const poster = exhibit && exhibit.querySelector("[data-zork-poster]");
+  if (exhibit && play && poster) {
+    play.addEventListener("click", (e) => {
+      const me = e as MouseEvent;
+      // Let modified clicks (cmd/ctrl/shift/middle) open the full game in a new tab.
+      if (me.metaKey || me.ctrlKey || me.shiftKey || me.button !== 0) return;
+      e.preventDefault();
+      const iframe = document.createElement("iframe");
+      iframe.src = exhibit.getAttribute("data-zork-src") ?? "";
+      iframe.title = exhibit.getAttribute("data-zork-title") ?? "";
+      iframe.setAttribute("loading", "lazy");
+      iframe.className = "block w-full rounded-xl border border-line";
+      iframe.style.height = "70vh";
+      poster.replaceWith(iframe);
+    });
+  }
+</script>
