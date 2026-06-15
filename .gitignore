@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+.output/
+
+# Cloudflare
+.wrangler/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Brainstorm / session scratch (not part of the site)
+.superpowers/
+.remember/
+
+# OS / editor
+.DS_Store
+*.log
