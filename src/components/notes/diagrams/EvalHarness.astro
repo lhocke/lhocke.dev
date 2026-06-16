@@ -1,0 +1,60 @@
+---
+---
+<figure class="my-8">
+  <svg viewBox="0 0 660 180" width="100%" role="img" aria-label="Eval harness flow: fixtures feed a blind pipeline run, which is graded field-by-field, scored across a stack of models." font-family="Georgia, serif">
+    <title>Eval Harness — blind fixtures graded against known answers, scored per model</title>
+    <defs>
+      <marker id="arrowEvalHarness" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6" fill="none" stroke="#0f766e" stroke-width="1.1"/>
+      </marker>
+    </defs>
+
+    <!-- Stage 1: Fixtures -->
+    <rect x="14" y="65" width="118" height="50" fill="none" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+    <text x="73" y="86" fill="#1c1917" font-size="13" text-anchor="middle">Fixtures</text>
+    <text x="73" y="102" fill="#57534e" font-size="10" text-anchor="middle">(known-good answers)</text>
+
+    <!-- Arrow 1 → 2 -->
+    <line x1="132" y1="90" x2="166" y2="90" stroke="#0f766e" stroke-width="1.1" marker-end="url(#arrowEvalHarness)"/>
+
+    <!-- Stage 2: Run Blind -->
+    <rect x="170" y="65" width="118" height="50" fill="none" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+    <text x="229" y="86" fill="#1c1917" font-size="13" text-anchor="middle">Run Blind</text>
+    <text x="229" y="102" fill="#57534e" font-size="10" text-anchor="middle">(pipeline unaware)</text>
+
+    <!-- Arrow 2 → 3 -->
+    <line x1="288" y1="90" x2="322" y2="90" stroke="#0f766e" stroke-width="1.1" marker-end="url(#arrowEvalHarness)"/>
+
+    <!-- Stage 3: Grade -->
+    <rect x="326" y="65" width="148" height="50" fill="none" stroke="#d6d3d1" stroke-width="1" rx="2"/>
+    <text x="400" y="86" fill="#1c1917" font-size="13" text-anchor="middle">Grade Field-by-Field</text>
+    <text x="400" y="102" fill="#57534e" font-size="10" text-anchor="middle">vs known answer</text>
+
+    <!-- Arrow 3 → model stack (single connector to mid-point) -->
+    <line x1="474" y1="90" x2="508" y2="90" stroke="#0f766e" stroke-width="1.1" marker-end="url(#arrowEvalHarness)"/>
+
+    <!-- Stage 4: Model stack — emphasized teal endpoint -->
+    <!-- local 8B -->
+    <rect x="512" y="22" width="118" height="40" fill="none" stroke="#0f766e" stroke-width="1" rx="2"/>
+    <text x="571" y="38" fill="#0f766e" font-size="12" text-anchor="middle">local 8B</text>
+    <text x="571" y="53" fill="#0f766e" font-size="10" text-anchor="middle">Score</text>
+
+    <!-- local 70B -->
+    <rect x="512" y="70" width="118" height="40" fill="none" stroke="#0f766e" stroke-width="1" rx="2"/>
+    <text x="571" y="86" fill="#0f766e" font-size="12" text-anchor="middle">local 70B</text>
+    <text x="571" y="101" fill="#0f766e" font-size="10" text-anchor="middle">Score</text>
+
+    <!-- cloud -->
+    <rect x="512" y="118" width="118" height="40" fill="none" stroke="#0f766e" stroke-width="1" rx="2"/>
+    <text x="571" y="134" fill="#0f766e" font-size="12" text-anchor="middle">cloud</text>
+    <text x="571" y="149" fill="#0f766e" font-size="10" text-anchor="middle">Score</text>
+
+    <!-- Vertical connector from arrow tip to span the 3 model boxes -->
+    <line x1="508" y1="42" x2="508" y2="138" stroke="#0f766e" stroke-width="1.1"/>
+    <!-- Horizontal spurs to each model box -->
+    <line x1="508" y1="42" x2="512" y2="42" stroke="#0f766e" stroke-width="1.1"/>
+    <line x1="508" y1="90" x2="512" y2="90" stroke="#0f766e" stroke-width="1.1"/>
+    <line x1="508" y1="138" x2="512" y2="138" stroke="#0f766e" stroke-width="1.1"/>
+  </svg>
+  <figcaption class="mt-2 text-center font-mono text-xs text-faint">Blind fixtures, graded against known answers, scored across every model in the running.</figcaption>
+</figure>

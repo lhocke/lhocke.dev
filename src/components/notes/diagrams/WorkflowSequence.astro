@@ -1,0 +1,90 @@
+---
+---
+<figure class="my-8">
+  <svg viewBox="0 0 480 640" width="100%" role="img" aria-label="Vertical sequence diagram showing one investigation run: question ingestion, parallel agent pull, correlation, a validation loop that distrusts the easy answer and sends a fresh agent, and a final high-confidence verdict." font-family="Georgia, serif">
+    <title>Investigation workflow sequence: question → parallel agents → correlate → validate (with fresh-agent loop) → verdict</title>
+
+    <defs>
+      <marker id="wfseq-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6" fill="none" stroke="#0f766e" stroke-width="1.1"/>
+      </marker>
+    </defs>
+
+    <!-- ── Step 1: Question ── -->
+    <rect x="120" y="20" width="240" height="44" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="240" y="38" text-anchor="middle" font-size="12" fill="#1c1917">Question</text>
+    <text x="240" y="54" text-anchor="middle" font-size="10" fill="#57534e">a batch of transfers failed</text>
+
+    <!-- connector 1→2 -->
+    <line x1="240" y1="64" x2="240" y2="96" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- ── Step 2: Six agents fan-out ── -->
+    <rect x="120" y="96" width="240" height="44" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="240" y="114" text-anchor="middle" font-size="12" fill="#1c1917">Six agents pull in parallel</text>
+    <text x="240" y="130" text-anchor="middle" font-size="10" fill="#57534e">logs · Slack · deploys · metrics · alerts · tickets</text>
+
+    <!-- fan out lines to two representative source chips -->
+    <line x1="185" y1="140" x2="130" y2="168" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+    <line x1="295" y1="140" x2="350" y2="168" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- source chip left: deploy log -->
+    <rect x="70" y="168" width="120" height="32" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="130" y="182" text-anchor="middle" font-size="10" fill="#1c1917">Deploy logs</text>
+    <text x="130" y="194" text-anchor="middle" font-size="9" fill="#57534e">service-gateway</text>
+
+    <!-- source chip right: Slack -->
+    <rect x="290" y="168" width="120" height="32" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="350" y="182" text-anchor="middle" font-size="10" fill="#1c1917">Slack #incidents</text>
+    <text x="350" y="194" text-anchor="middle" font-size="9" fill="#57534e">oncall channel</text>
+
+    <!-- converge lines from chips to step 3 -->
+    <line x1="130" y1="200" x2="200" y2="228" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+    <line x1="350" y1="200" x2="280" y2="228" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- ── Step 3: Correlate ── -->
+    <rect x="100" y="228" width="280" height="50" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="240" y="248" text-anchor="middle" font-size="12" fill="#1c1917">Correlate</text>
+    <text x="240" y="263" text-anchor="middle" font-size="10" fill="#57534e">proposes 02:14 config change → 02:15 error spike</text>
+
+    <!-- connector 3→4 -->
+    <line x1="240" y1="278" x2="240" y2="310" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- ── Step 4: Validate (skeptical) ── -->
+    <rect x="100" y="310" width="280" height="50" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="240" y="330" text-anchor="middle" font-size="12" fill="#1c1917">Validate</text>
+    <text x="240" y="346" text-anchor="middle" font-size="10" fill="#57534e">flags cause as weak — one fuzzy Slack timestamp</text>
+
+    <!-- teal feedback arrow out right from step 4 → step 4b, then back in -->
+    <!-- right branch down -->
+    <line x1="380" y1="335" x2="420" y2="335" stroke="#0f766e" stroke-width="1.1"/>
+    <line x1="420" y1="335" x2="420" y2="430" stroke="#0f766e" stroke-width="1.1"/>
+    <!-- label on the right branch -->
+    <text x="428" y="386" text-anchor="start" font-size="10" fill="#0f766e">fresh</text>
+    <text x="428" y="398" text-anchor="start" font-size="10" fill="#0f766e">agent</text>
+
+    <!-- ── Step 4b: Fresh agent digs deploy log ── -->
+    <rect x="100" y="400" width="280" height="50" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="240" y="420" text-anchor="middle" font-size="12" fill="#1c1917">Fresh agent digs deploy log</text>
+    <text x="240" y="436" text-anchor="middle" font-size="10" fill="#57534e">confirms 02:14:31 exact timestamp</text>
+
+    <!-- arrow from right branch into step 4b -->
+    <line x1="420" y1="430" x2="382" y2="430" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- connector 4b→5 -->
+    <line x1="240" y1="450" x2="240" y2="484" stroke="#0f766e" stroke-width="1.1" marker-end="url(#wfseq-arrow)"/>
+
+    <!-- ── Step 5: Verdict (emphasized) ── -->
+    <rect x="100" y="484" width="280" height="50" rx="2" fill="none" stroke="#0f766e" stroke-width="1.4"/>
+    <text x="240" y="505" text-anchor="middle" font-size="13" fill="#0f766e">Verdict</text>
+    <text x="240" y="521" text-anchor="middle" font-size="10" fill="#0f766e">confidence earned — ready for sign-off</text>
+
+    <!-- step labels on left margin -->
+    <text x="14" y="46" text-anchor="start" font-size="9" fill="#57534e">1</text>
+    <text x="14" y="122" text-anchor="start" font-size="9" fill="#57534e">2</text>
+    <text x="14" y="256" text-anchor="start" font-size="9" fill="#57534e">3</text>
+    <text x="14" y="338" text-anchor="start" font-size="9" fill="#57534e">4</text>
+    <text x="14" y="428" text-anchor="start" font-size="9" fill="#57534e">4b</text>
+    <text x="14" y="512" text-anchor="start" font-size="9" fill="#57534e">5</text>
+  </svg>
+  <figcaption class="mt-2 text-center font-mono text-xs text-faint">One run: the validation step distrusts the easy answer and sends a fresh agent to firm it up.</figcaption>
+</figure>

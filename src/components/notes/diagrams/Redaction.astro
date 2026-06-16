@@ -1,0 +1,27 @@
+<figure class="my-8">
+  <div class="flex flex-col sm:flex-row gap-4">
+    <div class="flex-1 border border-line rounded p-4">
+      <div class="font-mono text-xs text-faint uppercase tracking-widest mb-3">Before</div>
+      <p class="font-mono text-xs text-muted leading-relaxed">
+        Customer
+        <span class="underline decoration-[#0f766e] underline-offset-2">Jane Okafor</span>
+        (<span class="underline decoration-[#0f766e] underline-offset-2">jane.okafor@example.com</span>,
+        acct <span class="underline decoration-[#0f766e] underline-offset-2">4471</span>)
+        reported a failed transfer.
+      </p>
+    </div>
+    <div class="flex-1 border border-line rounded p-4">
+      <div class="font-mono text-xs text-faint uppercase tracking-widest mb-3">After</div>
+      <p class="font-mono text-xs text-muted leading-relaxed">
+        Customer
+        <span class="text-[#0f766e]">&laquo;PERSON_1&raquo;</span>
+        (<span class="text-[#0f766e]">&laquo;EMAIL_1&raquo;</span>,
+        acct <span class="text-[#0f766e]">&laquo;ACCT_1&raquo;</span>)
+        reported a failed transfer.
+      </p>
+    </div>
+  </div>
+  <figcaption class="mt-2 text-center font-mono text-xs text-faint">
+    Identifying data is replaced with stable tokens before anything is logged or sent to a model.
+  </figcaption>
+</figure>

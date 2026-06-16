@@ -8,6 +8,10 @@ draft: true
 ---
 
 import Takeaway from "../../components/notes/Takeaway.astro";
+import Pipeline from "../../components/notes/diagrams/Pipeline.astro";
+import Redaction from "../../components/notes/diagrams/Redaction.astro";
+import WorkflowSequence from "../../components/notes/diagrams/WorkflowSequence.astro";
+import EvalHarness from "../../components/notes/diagrams/EvalHarness.astro";
 
 {/* RAW FULL DRAFT for Dylan's edit. Voice calibrated from your edit of "Why specialized agents."
     Your two paragraphs in that section are preserved verbatim. Everything else is mine to match — edit hard.
@@ -23,7 +27,7 @@ The expensive part was never any single lookup. It's the stitching. You have to 
 
 The shape follows the problem. One agent per source, each of them good at exactly one system and nothing else. They run in parallel and pull what's relevant; a correlation step lines their findings up against each other and looks for the connections no single source shows on its own; a validation step checks that the story actually holds together before anyone sees it, and sends work back for another pass if it doesn't; a redaction step strips anything sensitive; and the whole thing returns a structured result instead of a paragraph of prose.
 
-{/* DIAGRAM: pipeline architecture — six sources → specialized agents → correlate → validate (with feedback loop back to agents) → redact → structured output */}
+<Pipeline />
 
 The rest of this is really just those decisions, one at a time, and why each one earns its place.
 
@@ -39,12 +43,7 @@ Redaction runs before anything leaves the pipeline, and that ordering is the who
 
 So it's a real stage with one job: replace anything identifying with a stable placeholder before correlation, before logging, before any call leaves the building. "Stable" is doing work in that sentence. The same person has to map to the same token everywhere, or correlation loses the one thread it most needs, that two records are about the same account.
 
-```text
-before:  Customer Jane Okafor (jane.okafor@example.com, acct 4471) reported a failed transfer.
-after:   Customer «PERSON_1» («EMAIL_1», «ACCT_1») reported a failed transfer.
-```
-
-{/* DIAGRAM: redaction before/after — styled HTML panel, synthetic text */}
+<Redaction />
 
 The placeholders are illustrative, but the rule behind them is not: nothing identifying reaches a model or a log, and the correlation still works because the tokens are consistent.
 
@@ -77,7 +76,7 @@ A question comes in: a batch of transfers failed last night, and nobody's sure w
 
 Correlation lines those up and proposes the obvious story: the 02:14 config change caused the 02:15 spike. But the validation step doesn't take the obvious story on faith. It notices the supporting evidence for the *cause* is a single Slack message with a fuzzy timestamp, "around 2," and flags that claim as weak. So it does what the modular design makes cheap: it spins up a fresh agent to dig specifically for the deploy record, finds the exact 02:14:31 timestamp in the deploy log, and adds it to the pile. Now the timeline is tight, the confidence is earned rather than asserted, and the run returns a verdict that a person can sign off on in a minute instead of rebuilding from scratch.
 
-{/* DIAGRAM: representative-workflow sequence — the run above, including the self-validation loop */}
+<WorkflowSequence />
 
 <Takeaway>
 The self-validation loop is the difference between a tool that's usually right and one you can hand an investigation to. It's only practical because the agents are small: re-checking one weak claim costs one cheap rerun, not a restart.
@@ -95,7 +94,7 @@ So measuring isn't a virtue I tacked on. It's the only thing that tells me wheth
 
 The eval is built the way you'd build any honest test. A set of fixtures, each a full investigation with a known-good answer worked out by hand. The pipeline runs them blind: it doesn't know it's being tested, and the grading compares its structured output against the known answer field by field, so "sounded confident" earns nothing. Same fixtures, run against every model I'm considering, so the scores are comparable.
 
-{/* DIAGRAM: eval harness — fixtures (known-good) → run blind → grade against answer → score per model */}
+<EvalHarness />
 
 Running it often is the other half. A model that scored well last month can degrade after a provider update, and a fixture suite you actually run is the only thing that catches that before a user does.
 

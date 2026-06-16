@@ -1,0 +1,157 @@
+---
+// Pipeline.astro — Athena canonical architecture diagram
+// No props needed; self-contained.
+---
+
+<figure class="my-8">
+  <svg
+    viewBox="0 0 780 310"
+    width="100%"
+    role="img"
+    aria-label="Data pipeline: six source systems feed specialized agents, which correlate, self-validate with a feedback loop, redact, then emit structured output"
+    font-family="Georgia, serif"
+  >
+    <title>Athena pipeline: sources → specialized agents → correlate → self-validate → redact → structured output</title>
+
+    <!-- Arrowhead marker (unique id) -->
+    <defs>
+      <marker id="pipeline-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6" fill="none" stroke="#0f766e" stroke-width="1.1"/>
+      </marker>
+      <!-- Smaller arrowhead for the feedback loop curve -->
+      <marker id="pipeline-arrow-fb" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6" fill="none" stroke="#0f766e" stroke-width="1.1"/>
+      </marker>
+    </defs>
+
+    <!-- ─────────────────────────────────────────────────
+         LEFT COLUMN: 6 source nodes
+         x=10, w=88, h=26, rx=2
+         y positions: 30, 72, 114, 156, 198, 240  (gap=42)
+         ───────────────────────────────────────────────── -->
+
+    <!-- BigQuery -->
+    <rect x="10" y="30" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="47" font-size="12" text-anchor="middle" fill="#1c1917">BigQuery</text>
+
+    <!-- Datadog -->
+    <rect x="10" y="72" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="89" font-size="12" text-anchor="middle" fill="#1c1917">Datadog</text>
+
+    <!-- Slack -->
+    <rect x="10" y="114" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="131" font-size="12" text-anchor="middle" fill="#1c1917">Slack</text>
+
+    <!-- Notion -->
+    <rect x="10" y="156" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="173" font-size="12" text-anchor="middle" fill="#1c1917">Notion</text>
+
+    <!-- Jira -->
+    <rect x="10" y="198" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="215" font-size="12" text-anchor="middle" fill="#1c1917">Jira</text>
+
+    <!-- Zendesk -->
+    <rect x="10" y="240" width="88" height="26" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="54" y="257" font-size="12" text-anchor="middle" fill="#1c1917">Zendesk</text>
+
+    <!-- ─────────────────────────────────────────────────
+         ARROWS: each source → left edge of Specialized Agents box (x=122)
+         Arrow right edge of source = 98; box left = 122
+         Each arrow starts at (98, nodeCenter) → (122, 135) fan-in
+         ───────────────────────────────────────────────── -->
+
+    <!-- BigQuery → agents (fans to center y=135) -->
+    <line x1="98" y1="43" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+    <!-- Datadog -->
+    <line x1="98" y1="85" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+    <!-- Slack -->
+    <line x1="98" y1="127" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+    <!-- Notion -->
+    <line x1="98" y1="169" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+    <!-- Jira -->
+    <line x1="98" y1="211" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+    <!-- Zendesk -->
+    <line x1="98" y1="253" x2="122" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+
+    <!-- ─────────────────────────────────────────────────
+         SPECIALIZED AGENTS box
+         x=122, y=14, w=100, h=258, rx=2
+         center x=172, center y=143
+         ───────────────────────────────────────────────── -->
+    <rect x="122" y="14" width="100" height="258" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <!-- Rotated label — use two lines centered in the box -->
+    <text x="172" y="136" font-size="12" text-anchor="middle" fill="#1c1917">Specialized</text>
+    <text x="172" y="152" font-size="12" text-anchor="middle" fill="#1c1917">Agents</text>
+
+    <!-- ─────────────────────────────────────────────────
+         ARROW: Agents → Correlate
+         ───────────────────────────────────────────────── -->
+    <line x1="222" y1="135" x2="256" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+
+    <!-- ─────────────────────────────────────────────────
+         CORRELATE box
+         x=260, y=117, w=86, h=36, rx=2
+         ───────────────────────────────────────────────── -->
+    <rect x="260" y="117" width="86" height="36" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="303" y="139" font-size="12" text-anchor="middle" fill="#1c1917">Correlate</text>
+
+    <!-- ─────────────────────────────────────────────────
+         ARROW: Correlate → Validate
+         ───────────────────────────────────────────────── -->
+    <line x1="346" y1="135" x2="380" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+
+    <!-- ─────────────────────────────────────────────────
+         VALIDATE box
+         x=384, y=117, w=80, h=36, rx=2
+         ───────────────────────────────────────────────── -->
+    <rect x="384" y="117" width="80" height="36" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="424" y="139" font-size="12" text-anchor="middle" fill="#1c1917">Validate</text>
+
+    <!-- ─────────────────────────────────────────────────
+         FEEDBACK ARC: Validate → back to Specialized Agents
+         Curves up and over, going right-to-left
+         Path: start at top-center of Validate (424, 117)
+               arc up through y=60, land at top-center of Agents (172, 14)
+         Using a cubic bezier for a smooth curve
+         ───────────────────────────────────────────────── -->
+    <path
+      d="M424,117 C424,60 172,60 172,14"
+      fill="none"
+      stroke="#0f766e"
+      stroke-width="1.1"
+      stroke-dasharray="5,3"
+      marker-end="url(#pipeline-arrow-fb)"
+    />
+    <!-- Feedback label -->
+    <text x="298" y="52" font-size="10" text-anchor="middle" fill="#57534e">self-validation loop</text>
+
+    <!-- ─────────────────────────────────────────────────
+         ARROW: Validate → Redact
+         ───────────────────────────────────────────────── -->
+    <line x1="464" y1="135" x2="498" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+
+    <!-- ─────────────────────────────────────────────────
+         REDACT box
+         x=502, y=117, w=76, h=36, rx=2
+         ───────────────────────────────────────────────── -->
+    <rect x="502" y="117" width="76" height="36" rx="2" fill="none" stroke="#d6d3d1" stroke-width="1"/>
+    <text x="540" y="139" font-size="12" text-anchor="middle" fill="#1c1917">Redact</text>
+
+    <!-- ─────────────────────────────────────────────────
+         ARROW: Redact → Structured Output
+         ───────────────────────────────────────────────── -->
+    <line x1="578" y1="135" x2="614" y2="135" stroke="#0f766e" stroke-width="1.1" marker-end="url(#pipeline-arrow)"/>
+
+    <!-- ─────────────────────────────────────────────────
+         STRUCTURED OUTPUT box — emphasized teal node
+         x=618, y=112, w=148, h=46, rx=2
+         ───────────────────────────────────────────────── -->
+    <rect x="618" y="112" width="148" height="46" rx="2" fill="none" stroke="#0f766e" stroke-width="1"/>
+    <text x="692" y="131" font-size="12" text-anchor="middle" fill="#0f766e">Structured</text>
+    <text x="692" y="148" font-size="12" text-anchor="middle" fill="#0f766e">Output</text>
+
+  </svg>
+  <figcaption class="mt-2 text-center font-mono text-xs text-faint">
+    Specialized agents → correlate → self-validate → redact → structured output
+  </figcaption>
+</figure>
