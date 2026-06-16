@@ -17,7 +17,7 @@ import Takeaway from "../../components/notes/Takeaway.astro";
 
 Most of the questions worth asking at a company don't have their answer in one place. Someone wants to know why a thing happened — an account did something it shouldn't have, a number moved overnight, a customer hit a wall nobody can reproduce — and the evidence is scattered. A ticket in Zendesk, a related bug in Jira, a Slack thread where two engineers half-figured it out and then got pulled away, an error spike in Datadog, the raw events in BigQuery, a runbook in Notion that may or may not still be accurate. A person can chase all of that down. It just costs them an afternoon, and it costs them the work only they can do.
 
-The expensive part was never any single lookup. It's the stitching. You have to hold six systems in your head at once, know the quirks of each, and catch the one connection across them that actually explains what happened: the Datadog spike that lines up with a deploy mentioned in the Slack thread that the ticket never references. Miss it and you close the investigation with an answer that sounds right and isn't. That's the job I wanted to hand to software. Not "replace the investigator," but do the legwork well enough, and consistently enough, that a person only has to do the part that needs a person.
+The expensive part was never any single lookup. It's the stitching. You have to hold six systems in your head at once, know the quirks of each, and catch the one connection across them that actually explains what happened: the Datadog spike that lines up with a deploy mentioned in the Slack thread that the ticket never references. Miss it and you close the investigation with an answer that sounds right and isn't. Add a new hire into the mix and you're spending months trying to impart years of experience with inevitable gaps for the things you do every day and never think about. That's the job I wanted to hand to software. Not "replace the investigator," but do the legwork well enough, and consistently enough, that a person only has to do the part that needs a person.
 
 ## How the pipeline is shaped
 
@@ -71,7 +71,7 @@ A paragraph reads well and hides everything. You can't tell, from a fluent summa
 
 ## One investigation, end to end
 
-Here is the shape of a single run, with synthetic details so nothing real leaks.
+Here is the shape of a single run, with synthetic details for the sake of generalization.
 
 A question comes in: a batch of transfers failed last night, and nobody's sure why. The six agents go out in parallel. Zendesk turns up three tickets opened just after 2am. Datadog shows an error rate that jumped sixfold at 02:15. BigQuery confirms the failures cluster on one code path. The Slack agent finds a thread where someone mentions a config change going out "around 2." Jira has no matching bug yet. Notion's runbook for this failure mode is two years old and points at a service that no longer exists.
 
@@ -87,7 +87,7 @@ The self-validation loop is the difference between a tool that's usually right a
 
 Here's the part most of these systems skip, and the part I care most about.
 
-I'm not skeptical of computational models because I think they're useless. I'm skeptical because most of what's being sold right now is a marketing-driven cash grab in search of a purpose, and the way you tell the real thing from the pitch is that the real thing has been measured. A language model will hand you a confident, well-formatted answer whether or not it's correct. That's the failure mode that matters, because it's the one you don't notice: a few good runs on a bad assumption, and the thing sails along producing plausible output until the day it's quietly, expensively wrong.
+I'm not skeptical of Machine Learning and computational models because I think they're useless. I'm skeptical because most of what's being sold right now is a marketing-driven cash grab in search of a purpose, and the way you tell the real thing from the pitch is that the real thing has been measured. A language model will hand you a confident, well-formatted answer whether or not it's correct. That's the failure mode that matters, because it's the one you don't notice: a few good runs on a bad assumption, and the thing sails along producing plausible output until the day it's quietly, expensively wrong.
 
 So measuring isn't a virtue I tacked on. It's the only thing that tells me whether the pipeline is helping or just burning tokens and looking busy.
 
@@ -113,7 +113,7 @@ So the work gets right-sized. Plotting the scores by task makes the call obvious
 
 *(Illustrative — synthetic scores.)*
 
-Read that and the decision writes itself. Pulling and summarizing a single source is easy enough that a small local model does it for nearly free; correlation and the final verdict are where judgment lives, so those earn the bigger model. The point isn't "local good, cloud bad." It's that you can only make the trade deliberately once you've measured it, and most people never measure it.
+Read that and the decision writes itself. Pulling and summarizing a single source is easy enough that a small local model does it for nearly free; correlation and the final verdict are where judgment lives, so those earn the bigger model. The point isn't "local good, cloud bad." It's that you can only make the trade deliberately once you've measured it.
 
 ## What the rigor buys
 
