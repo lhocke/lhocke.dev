@@ -105,7 +105,9 @@ The paper's credibility rests on it reading as written by a sharp, skeptical eng
 
 **Voice ground truth = Dylan's own writing, NOT the current site copy.** Caught in review: the live Hero/About copy was largely *Claude-drafted and accepted*, not authored by Dylan — so calibrating to it is circular (it reproduces Claude's approximation of his voice, the exact failure we're avoiding). The real reference is **(a) authentic samples Dylan wrote himself, and (b) his edits in the calibration loop below.** The "voice anchors" are provisional targets to be confirmed/corrected against those — not derived from the site.
 
-**Voice anchors** (provisional — confirm against real samples + edits):
+**Voice is audience-dependent — the target is a register, not a monolith.** Dylan code-switches heavily by audience (English-major background, wide reading), so there is no single "Dylan voice" to extract — there's the register he'd pick for *this* audience and genre. **Target register for this paper:** a senior engineer explaining a system they built and were skeptical enough to measure — first person, technically precise, confident without marketing gloss, dry wit in service of clarity, essayistic enough to read well (it's *Notes*, not a corporate PDF). Authentic samples should match *this* register (his technical/professional writing), not his casual or literary range. *(Register confirmed with Dylan — see §9 if still open.)*
+
+**Voice anchors** (provisional — confirm against real samples + edits, within the target register above):
 - First person, plainspoken, concrete — names the specific tool and the specific tradeoff instead of abstractions.
 - Dry, a little irreverent; confident without grandiosity. Short, punchy contrasts over hedged balance.
 - Genuinely skeptical of AI hype; takes a position rather than both-sidesing.
@@ -158,6 +160,7 @@ Editorial-line SVG (`.astro` components) unless noted — items 2 and 3 are inte
 
 ## 9. Open / Deferred
 
+- **Target register confirmation** (§5.5) — proposed: senior-engineer-explaining-a-measured-system. Confirm/tune with Dylan; also identify which of his samples best match it.
 - Final title selection (during authoring).
 - Whether the in-voice "PDF edition coming" note ships now or waits for the PDF unit.
 - Exact denylist contents for the `verify-site.mjs` leak-pattern guard (assemble during implementation; keep the denylist itself out of git history if it contains the real names — or encode as hashes/an env-supplied list so the spec/verifier don't themselves leak).
