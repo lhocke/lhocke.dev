@@ -85,11 +85,15 @@ if (index && !index.raw.includes('href="/notes/athena-investigation-pipeline"'))
   errors.push('MISSING athena card link to the white paper');
 }
 
-// --- No placeholder content shipped ---
+// --- No leftover stub content shipped ---
+// Match the ALL-CAPS stub sentinel only, on the original-case HTML — lowercase
+// "placeholder" is legitimate prose (the redaction section discusses stable placeholders).
 if (process.env.NOTES_READY === "1") {
-  for (const p of [notesIndex, athenaPaper].filter(Boolean)) {
-    if (p.text.includes("placeholder")) {
-      errors.push("PLACEHOLDER text present in a Notes page — author real content before shipping");
+  for (const rel of ["notes/index.html", "notes/athena-investigation-pipeline/index.html"]) {
+    const full = join(DIST, rel);
+    if (!existsSync(full)) continue;
+    if (/\bPLACEHOLDER\b/.test(readFileSync(full, "utf8"))) {
+      errors.push(`Stub PLACEHOLDER text present in ${rel} — author real content before shipping`);
     }
   }
 }
