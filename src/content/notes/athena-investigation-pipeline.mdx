@@ -1,24 +1,138 @@
 ---
 title: "Build the thing, then prove it works"
-dek: "a multi-source investigation pipeline — and the evals that keep it honest"
-abstract: "PLACEHOLDER — replaced in Phase 3. A walkthrough of a multi-source investigation pipeline and the evaluation rigor behind it."
+dek: "a multi-source investigation pipeline, and the evals that keep it honest"
+abstract: "I built a pipeline that investigates problems the way a person would: by pulling evidence out of every system that might hold a piece of the answer, lining it up, and checking its own work before it reports back. This is how it's put together, and how I decide whether to trust it — blind evaluations across a range of models, run often enough to catch the day it quietly stops working."
 tags: ["BigQuery", "Datadog", "Slack", "Notion", "Jira", "Zendesk"]
 order: 1
 draft: true
 ---
 
+import Takeaway from "../../components/notes/Takeaway.astro";
+
+{/* RAW FULL DRAFT for Dylan's edit. Voice calibrated from your edit of "Why specialized agents."
+    Your two paragraphs in that section are preserved verbatim. Everything else is mine to match — edit hard.
+    Synthetic example: all entities and numbers are fabricated and labeled illustrative. Diagram slots are marked with DIAGRAM comments for Phase 4. */}
+
 ## The problem
 
-PLACEHOLDER — content authored in Phase 3.
+Most of the questions worth asking at a company don't have their answer in one place. Someone wants to know why a thing happened — an account did something it shouldn't have, a number moved overnight, a customer hit a wall nobody can reproduce — and the evidence is scattered. A ticket in Zendesk, a related bug in Jira, a Slack thread where two engineers half-figured it out and then got pulled away, an error spike in Datadog, the raw events in BigQuery, a runbook in Notion that may or may not still be accurate. A person can chase all of that down. It just costs them an afternoon, and it costs them the work only they can do.
+
+The expensive part was never any single lookup. It's the stitching. You have to hold six systems in your head at once, know the quirks of each, and catch the one connection across them that actually explains what happened: the Datadog spike that lines up with a deploy mentioned in the Slack thread that the ticket never references. Miss it and you close the investigation with an answer that sounds right and isn't. That's the job I wanted to hand to software. Not "replace the investigator," but do the legwork well enough, and consistently enough, that a person only has to do the part that needs a person.
+
+## How the pipeline is shaped
+
+The shape follows the problem. One agent per source, each of them good at exactly one system and nothing else. They run in parallel and pull what's relevant; a correlation step lines their findings up against each other and looks for the connections no single source shows on its own; a validation step checks that the story actually holds together before anyone sees it, and sends work back for another pass if it doesn't; a redaction step strips anything sensitive; and the whole thing returns a structured result instead of a paragraph of prose.
+
+{/* DIAGRAM: pipeline architecture — six sources → specialized agents → correlate → validate (with feedback loop back to agents) → redact → structured output */}
+
+The rest of this is really just those decisions, one at a time, and why each one earns its place.
 
 ## Why specialized agents
 
-{/* CALIBRATION DRAFT — Phase 2, Task 10. Dylan: edit this hard. Your edits are the voice signal — I learn your register from the diff, then draft the rest of the paper to match. Don't be precious about it. */}
+I reach for several small, specialized agents instead of one general one for the same reason I'd reach for a screwdriver instead of a Swiss Army knife: a general agent drifts. Point a do-everything prompt at six different systems and it holds its shape for a while, then quietly stops — it forgets the dialect quirks of one source, starts formatting another's output a little differently each run, and you end up spending valuable time prompting it back into line instead of getting answers. An investigation pipeline can't afford that. It has to return the same high-quality, predictable result every time, not something you re-check because the model wandered off. The smaller agents are also critical for any self-validation, if a source's conclusions are weak, it's easy to run a deeper investigation through a fresh agent and just add its results to the analysis.
 
-I reach for several small, specialized agents instead of one general one for the same reason I'd reach for the right tool instead of a Swiss Army knife: a general agent drifts. Point a do-everything prompt at six different systems and it holds its shape for a while, then quietly stops — it forgets the dialect quirks of one source, starts formatting another's output a little differently each run, and you end up spending your time prompting it back into line instead of getting answers. An investigation pipeline can't afford that. It has to return the same high-quality, predictable result every time, not something you re-check because the model wandered off.
+A specialized agent has a narrow job and a narrow context, and that narrowness is what keeps it honest. The agent that queries BigQuery only needs to know how to query BigQuery — its SQL dialect, the shape of the tables it's allowed to touch — and nothing about how Zendesk models a ticket or how Datadog stamps an event. Smaller surface, fewer ways to drift, and when something does go wrong it's obvious which agent to fix rather than which clause in a thousand-word prompt to go hunting through. It's cheaper to rerun a failed step as well, re-running a source check doesn't require rolling an agent from scratch.
 
-A specialized agent has a narrow job and a narrow context, and that narrowness is what keeps it honest. The agent that queries BigQuery only needs to know how to query BigQuery — its SQL dialect, the shape of the tables it's allowed to touch — and nothing about how Zendesk models a ticket or how Datadog stamps an event. Smaller surface, fewer ways to drift, and when something does go wrong it's obvious which agent to fix rather than which clause in a thousand-word prompt to go hunting through.
+## Redaction comes first
 
-## Proving it works
+Redaction runs before anything leaves the pipeline, and that ordering is the whole point. The evidence these agents pull is exactly the kind of thing you don't want sitting in a log, or worse, sent off to a model running on hardware you don't own: names, emails, account identifiers, whatever happened to be pasted into a ticket at 2am. If redaction is a step you remember to bolt on at the end, you've already lost, because the sensitive data has passed through three places by the time you get there.
 
-PLACEHOLDER.
+So it's a real stage with one job: replace anything identifying with a stable placeholder before correlation, before logging, before any call leaves the building. "Stable" is doing work in that sentence. The same person has to map to the same token everywhere, or correlation loses the one thread it most needs, that two records are about the same account.
+
+```text
+before:  Customer Jane Okafor (jane.okafor@example.com, acct 4471) reported a failed transfer.
+after:   Customer «PERSON_1» («EMAIL_1», «ACCT_1») reported a failed transfer.
+```
+
+{/* DIAGRAM: redaction before/after — styled HTML panel, synthetic text */}
+
+The placeholders are illustrative, but the rule behind them is not: nothing identifying reaches a model or a log, and the correlation still works because the tokens are consistent.
+
+## A contract, not a paragraph
+
+The pipeline does not answer in prose. It answers in a fixed, validated structure: a verdict, the confidence behind it, and every piece of evidence that supports it, each tagged with where it came from.
+
+```json
+{
+  "summary": "Failed transfers traced to a config change deployed at 02:14 UTC.",
+  "confidence": 0.82,
+  "findings": [
+    { "claim": "error rate rose 6x at 02:15 UTC", "source": "datadog", "ref": "monitor/illustrative", "supports": true },
+    { "claim": "config change shipped at 02:14 UTC", "source": "slack", "ref": "thread/illustrative", "supports": true },
+    { "claim": "customer ticket opened at 02:31 UTC", "source": "zendesk", "ref": "ticket/illustrative", "supports": true }
+  ],
+  "needs_human_review": false
+}
+```
+
+*(Illustrative — every value above is synthetic.)*
+
+A paragraph reads well and hides everything. You can't tell, from a fluent summary, which claim is load-bearing and which one the model made up to round out the story. A structure forces each claim to name its source, which means a human can audit it in seconds and the next system downstream can act on it without re-parsing English. The contract is also what makes the second half of this post possible. You can't evaluate "a paragraph that sounds right." You can evaluate a structured claim against a known answer, field by field.
+
+## One investigation, end to end
+
+Here is the shape of a single run, with synthetic details so nothing real leaks.
+
+A question comes in: a batch of transfers failed last night, and nobody's sure why. The six agents go out in parallel. Zendesk turns up three tickets opened just after 2am. Datadog shows an error rate that jumped sixfold at 02:15. BigQuery confirms the failures cluster on one code path. The Slack agent finds a thread where someone mentions a config change going out "around 2." Jira has no matching bug yet. Notion's runbook for this failure mode is two years old and points at a service that no longer exists.
+
+Correlation lines those up and proposes the obvious story: the 02:14 config change caused the 02:15 spike. But the validation step doesn't take the obvious story on faith. It notices the supporting evidence for the *cause* is a single Slack message with a fuzzy timestamp, "around 2," and flags that claim as weak. So it does what the modular design makes cheap: it spins up a fresh agent to dig specifically for the deploy record, finds the exact 02:14:31 timestamp in the deploy log, and adds it to the pile. Now the timeline is tight, the confidence is earned rather than asserted, and the run returns a verdict that a person can sign off on in a minute instead of rebuilding from scratch.
+
+{/* DIAGRAM: representative-workflow sequence — the run above, including the self-validation loop */}
+
+<Takeaway>
+The self-validation loop is the difference between a tool that's usually right and one you can hand an investigation to. It's only practical because the agents are small: re-checking one weak claim costs one cheap rerun, not a restart.
+</Takeaway>
+
+## Why I measure any of it
+
+Here's the part most of these systems skip, and the part I care most about.
+
+I'm not skeptical of computational models because I think they're useless. I'm skeptical because most of what's being sold right now is a marketing-driven cash grab in search of a purpose, and the way you tell the real thing from the pitch is that the real thing has been measured. A language model will hand you a confident, well-formatted answer whether or not it's correct. That's the failure mode that matters, because it's the one you don't notice: a few good runs on a bad assumption, and the thing sails along producing plausible output until the day it's quietly, expensively wrong.
+
+So measuring isn't a virtue I tacked on. It's the only thing that tells me whether the pipeline is helping or just burning tokens and looking busy.
+
+## Blind fixtures, many models
+
+The eval is built the way you'd build any honest test. A set of fixtures, each a full investigation with a known-good answer worked out by hand. The pipeline runs them blind: it doesn't know it's being tested, and the grading compares its structured output against the known answer field by field, so "sounded confident" earns nothing. Same fixtures, run against every model I'm considering, so the scores are comparable.
+
+{/* DIAGRAM: eval harness — fixtures (known-good) → run blind → grade against answer → score per model */}
+
+Running it often is the other half. A model that scored well last month can degrade after a provider update, and a fixture suite you actually run is the only thing that catches that before a user does.
+
+## Local versus cloud
+
+The evals exist to answer a specific, boring, important question: what's the smallest, cheapest model that can do each job well enough? Sending every step to a frontier cloud model is the easy choice and the wasteful one. It costs more, it's slower, and it hands your data to someone else's hardware when a model running on yours would have done fine.
+
+So the work gets right-sized. Plotting the scores by task makes the call obvious:
+
+| Task | Local 8B | Local 70B | Cloud frontier |
+|---|---|---|---|
+| Source extraction (Zendesk, Jira) | 0.94 | 0.97 | 0.98 |
+| Cross-source correlation | 0.71 | 0.88 | 0.95 |
+| Final verdict + confidence | 0.66 | 0.90 | 0.96 |
+
+*(Illustrative — synthetic scores.)*
+
+Read that and the decision writes itself. Pulling and summarizing a single source is easy enough that a small local model does it for nearly free; correlation and the final verdict are where judgment lives, so those earn the bigger model. The point isn't "local good, cloud bad." It's that you can only make the trade deliberately once you've measured it, and most people never measure it.
+
+## What the rigor buys
+
+Three things, and none of them are abstract. Confidence to actually ship, because I've seen the score and not just a demo that happened to go well. The freedom to swap a model the day a cheaper one clears the bar, because the fixtures tell me immediately whether the swap held. And a standing tripwire for the day something regresses, instead of finding out from the person whose investigation it quietly got wrong.
+
+<Takeaway>
+Measurement is what turns "an impressive demo" into "a tool a team relies on." Everything else in this post is architecture; this is the part that lets me trust it.
+</Takeaway>
+
+## Generalizing it
+
+None of this is specific to investigations, or to the six tools I happened to wire up. The pattern is the portable part: specialized agents over one generalist, a correlation step that earns its conclusions, a validation loop that distrusts the easy answer, a structured contract instead of prose, and a blind eval that right-sizes the models underneath it. Swap the sources and it's a different system doing the same honest work.
+
+I built it because it saves me real time. I'm writing it down because the thinking transfers, and maybe it saves you some.
+
+## A few questions I get
+
+**Isn't all the measuring overkill?** It would be, if the cost of being wrong were small. For anything a team acts on, the cheap part is running the eval and the expensive part is the silent failure you ship without one.
+
+**Why not just one big, capable model with a long prompt?** Because it drifts, and because it's the most expensive way to do the easy 80% of the work. Small specialized agents are more predictable and cheaper to rerun, and they let you spend the big model only where judgment actually lives.
+
+**Why bother with local models at all?** Cost, speed, and not handing your data to someone else's hardware when you don't have to. The evals are what tell you which jobs a local model can take without anyone noticing the difference.
