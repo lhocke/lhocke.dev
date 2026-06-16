@@ -105,7 +105,7 @@ From the portfolio spec §2, all still binding:
 
 ## 5.5 Voice & Anti-Slop Discipline (non-negotiable)
 
-The paper's credibility rests on it reading as written by a sharp, skeptical engineer — *Dylan* — not generated. AI-slop tells are a defect that undercuts the whole "real builder who measures his work" thesis.
+The paper's credibility rests on it reading as written by a sharp, skeptical engineer — *Dylan* — not generated. AI-slop tells are a defect that undercuts the whole "real builder who measures his work" thesis. *(The durable, cross-content version of this discipline lives in the project `CLAUDE.md` so it persists across sessions and reaches subagents; this section is its paper-specific application.)*
 
 **Voice ground truth = Dylan's own writing, NOT the current site copy.** Caught in review: the live Hero/About copy was largely *Claude-drafted and accepted*, not authored by Dylan — so calibrating to it is circular (it reproduces Claude's approximation of his voice, the exact failure we're avoiding). The real reference is **(a) authentic samples Dylan wrote himself, and (b) his edits in the calibration loop below.** The "voice anchors" are provisional targets to be confirmed/corrected against those — not derived from the site.
 
