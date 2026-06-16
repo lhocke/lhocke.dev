@@ -20,12 +20,14 @@ const errors = [];
 
 const index = load("index.html");
 const zork = load("zork/index.html");
+const notesIndex = load("notes/index.html");
+const athenaPaper = load("notes/athena-investigation-pipeline/index.html");
 
 if (!index) errors.push("MISSING page: dist/index.html");
 if (!zork) errors.push("MISSING page: dist/zork/index.html (the /zork route)");
 
 // Site-wide corpora — robust to which page hosts which content.
-const pages = [index, zork].filter(Boolean);
+const pages = [index, zork, notesIndex, athenaPaper].filter(Boolean);
 const allText = pages.map((p) => p.text).join(" ");
 const allRaw = pages.map((p) => p.raw).join(" ");
 
@@ -69,6 +71,51 @@ if (zork) {
 // 6. Homepage Zork card points at the internal /zork route.
 if (index && !index.raw.includes('href="/zork"')) {
   errors.push('MISSING homepage card link to /zork (href="/zork")');
+}
+
+// --- Notes section structure ---
+if (!notesIndex) errors.push("MISSING page: dist/notes/index.html (the /notes route)");
+if (!athenaPaper) errors.push("MISSING page: dist/notes/athena-investigation-pipeline/index.html");
+
+// Homepage must link to the section and the paper
+if (index && !index.raw.includes('href="/notes"')) {
+  errors.push('MISSING nav link to /notes on the homepage');
+}
+if (index && !index.raw.includes('href="/notes/athena-investigation-pipeline"')) {
+  errors.push('MISSING athena card link to the white paper');
+}
+
+// --- No placeholder content shipped ---
+if (process.env.NOTES_READY === "1") {
+  for (const p of [notesIndex, athenaPaper].filter(Boolean)) {
+    if (p.text.includes("placeholder")) {
+      errors.push("PLACEHOLDER text present in a Notes page — author real content before shipping");
+    }
+  }
+}
+
+// --- Sanitization: no real client/employer/internal-system names in Notes ---
+const DENYLIST = (process.env.NOTES_DENYLIST || "")
+  .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean);
+for (const p of [notesIndex, athenaPaper].filter(Boolean)) {
+  for (const term of DENYLIST) {
+    if (p.raw.includes(term)) errors.push(`LEAK: forbidden term "${term}" present in a Notes page`);
+  }
+}
+if (DENYLIST.length === 0) {
+  console.warn("verify-site: NOTES_DENYLIST not set — leak check skipped (set it locally/CI before ship)");
+}
+
+// --- Anti-slop: banned LLM tells in Notes prose ---
+const BANNED_TELLS = [
+  "delve", "leverage", "seamless", "tapestry", "testament to",
+  "navigate the complexities", "game-changer", "deep dive",
+  "it's worth noting", "in conclusion", "at the end of the day",
+];
+for (const p of [notesIndex, athenaPaper].filter(Boolean)) {
+  for (const tell of BANNED_TELLS) {
+    if (p.text.includes(tell)) errors.push(`AI-SLOP tell present in a Notes page: "${tell}"`);
+  }
 }
 
 if (errors.length) {
