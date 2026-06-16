@@ -1,0 +1,16 @@
+---
+interface Heading { depth: number; slug: string; text: string; }
+interface Props { headings: Heading[]; }
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2); // h2 sections only
+---
+{items.length > 0 && (
+  <nav aria-label="On this page" class="text-sm">
+    <p class="font-mono text-xs uppercase tracking-widest text-faint">On this page</p>
+    <ul class="mt-2 list-none space-y-1.5 p-0">
+      {items.map((h) => (
+        <li><a href={`#${h.slug}`} class="text-muted transition-colors hover:text-ink">{h.text}</a></li>
+      ))}
+    </ul>
+  </nav>
+)}
