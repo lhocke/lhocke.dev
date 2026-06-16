@@ -21,15 +21,13 @@ import EvalHarness from "../../components/notes/diagrams/EvalHarness.astro";
 
 Most of the questions worth asking at a company don't have their answer in one place. Someone wants to know why a thing happened — an account did something it shouldn't have, a number moved overnight, a customer hit a wall nobody can reproduce — and the evidence is scattered. A ticket in Zendesk, a related bug in Jira, a Slack thread where two engineers half-figured it out and then got pulled away, an error spike in Datadog, the raw events in BigQuery, a runbook in Notion that may or may not still be accurate. A person can chase all of that down. It just costs them an afternoon, and it costs them the work only they can do.
 
-The expensive part was never any single lookup. It's the stitching. You have to hold six systems in your head at once, know the quirks of each, and catch the one connection across them that actually explains what happened: the Datadog spike that lines up with a deploy mentioned in the Slack thread that the ticket never references. Miss it and you close the investigation with an answer that sounds right and isn't. Add a new hire into the mix and you're spending months trying to impart years of experience with inevitable gaps for the things you do every day and never think about. That's the job I wanted to hand to software. Not "replace the investigator," but do the legwork well enough, and consistently enough, that a person only has to do the part that needs a person.
+The expensive part was never any single lookup. It's the stitching. You have to hold six systems in your head at once, know the quirks of each, and catch the one connection across them that actually explains what happened: the Datadog spike that lines up with a deploy mentioned in the Slack thread that the ticket never references. Miss it and you close the investigation with an answer that sounds right and isn't. Add a new hire into the mix and you're spending months trying to impart years of experience with inevitable gaps for the things you do every day and never think about. That's the job I wanted to hand to software: do the legwork well enough, and consistently enough, that a person only has to do the part that needs a person.
 
 ## How the pipeline is shaped
 
-The shape follows the problem. One agent per source, each of them good at exactly one system and nothing else. They run in parallel and pull what's relevant; a correlation step lines their findings up against each other and looks for the connections no single source shows on its own; a validation step checks that the story actually holds together before anyone sees it, and sends work back for another pass if it doesn't; a redaction step strips anything sensitive; and the whole thing returns a structured result instead of a paragraph of prose.
+One agent per source, each of them good at exactly one system and nothing else. They run in parallel and pull what's relevant; a correlation step lines their findings up against each other and looks for the connections no single source shows on its own; a validation step checks that the story actually holds together before anyone sees it, and sends work back for another pass if it doesn't; a redaction step strips anything sensitive; and the whole thing returns a structured result instead of a paragraph of prose.
 
 <Pipeline />
-
-The rest of this is really just those decisions, one at a time, and why each one earns its place.
 
 ## Why specialized agents
 
@@ -84,8 +82,6 @@ The self-validation loop is the difference between a tool that's usually right a
 
 ## Why I measure any of it
 
-Here's the part most of these systems skip, and the part I care most about.
-
 I'm not skeptical of Machine Learning and computational models because I think they're useless. I'm skeptical because most of what's being sold right now is a marketing-driven cash grab in search of a purpose, and the way you tell the real thing from the pitch is that the real thing has been measured. A language model will hand you a confident, well-formatted answer whether or not it's correct. That's the failure mode that matters, because it's the one you don't notice: a few good runs on a bad assumption, and the thing sails along producing plausible output until the day it's quietly, expensively wrong.
 
 So measuring isn't a virtue I tacked on. It's the only thing that tells me whether the pipeline is helping or just burning tokens and looking busy.
@@ -112,7 +108,7 @@ So the work gets right-sized. Plotting the scores by task makes the call obvious
 
 *(Illustrative — synthetic scores.)*
 
-Read that and the decision becomes simple. Pulling and summarizing a single source is easy enough that a small local model does it for nearly free; correlation and the final verdict are where judgment lives, so those earn the bigger model. The point isn't "local good, cloud bad." It's that you can only make the trade deliberately once you've measured it.
+Read that and the decision becomes simple. Pulling and summarizing a single source is easy enough that a small local model does it for nearly free; correlation and the final verdict are where judgment lives, so those earn the bigger model. You can only make the trade deliberately once you've measured it.
 
 ## What the rigor buys
 
@@ -124,7 +120,7 @@ Measurement is what turns "an impressive demo" into "a tool a team relies on." E
 
 ## Generalizing it
 
-None of this is specific to investigations, or to the six tools I happened to wire up. The pattern is the portable part: specialized agents over one generalist, a correlation step that earns its conclusions, a validation loop that distrusts the easy answer, a structured contract instead of prose, and a blind eval that right-sizes the models underneath it. Swap the sources and it's a different system doing the same honest work.
+None of this is specific to investigations, or to the six tools I happened to wire up. The pattern is the portable part. Swap the sources and it's a different system doing the same honest work.
 
 I built it because it saves me real time. I'm writing it down because the thinking transfers, and maybe it saves you some.
 
@@ -132,6 +128,6 @@ I built it because it saves me real time. I'm writing it down because the thinki
 
 **Isn't all the measuring overkill?** It would be, if the cost of being wrong were small. For anything a team acts on, the cheap part is running the eval and the expensive part is the silent failure you ship without one.
 
-**Why not just one big, capable model with a long prompt?** Because it drifts, and because it's the most expensive way to do the easy 80% of the work. Small specialized agents are more predictable and cheaper to rerun, and they let you spend the big model only where judgment actually lives.
+**Why not just one big, capable model with a long prompt?** Because it drifts, and because it's the most expensive way to do the easy work. Small specialized agents are more predictable and cheaper to rerun, and they let you spend the big model only where judgment actually lives.
 
 **Why bother with local models at all?** Cost, speed, and not handing your data to someone else's hardware when you don't have to. The evals are what tell you which jobs a local model can take without anyone noticing the difference.
