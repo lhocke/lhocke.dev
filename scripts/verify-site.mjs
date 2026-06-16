@@ -85,6 +85,11 @@ if (index && !index.raw.includes('href="/notes/athena-investigation-pipeline"'))
   errors.push('MISSING athena card link to the white paper');
 }
 
+// The /notes index must offer a way home (nav brand links to "/"); regression guard.
+if (notesIndex && !notesIndex.raw.includes('href="/"')) {
+  errors.push('/notes: MISSING a link home (href="/") — nav must work off the homepage');
+}
+
 // --- No leftover stub content shipped ---
 // Match the ALL-CAPS stub sentinel only, on the original-case HTML — lowercase
 // "placeholder" is legitimate prose (the redaction section discusses stable placeholders).
