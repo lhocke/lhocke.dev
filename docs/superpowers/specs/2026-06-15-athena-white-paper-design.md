@@ -79,6 +79,8 @@ From the portfolio spec §2, all still binding:
 
 **Masthead:** title · dek · abstract box (2–3 sentence TL;DR, also meta description) · source-tag pills (BigQuery · Datadog · Slack · Notion · Jira · Zendesk).
 
+**Point of view (the lens, not a manifesto).** Dylan's core stance: *computational models have real benefit, but the current hype reads as a marketing-driven cash grab in search of a purpose* — a technology that could do real good, shoved at people who don't know what to do with it. athena is the counter-example to that complaint: AI aimed at a real, bounded, valuable problem and measured to prove it earns its place. The paper carries this as its **worldview** and may land one or two sharp lines of it — but stays on athena. The broader polemic (generative-art "cash grab," etc.) is **out of the body**: off-topic here and needlessly polarizing for a hiring reader. *(Exact lean — pure lens / a line or two / more open — confirmed with Dylan; see §9 if open.)*
+
 **Act I — The system** *(build the thing)*
 1. **The problem** — when the answer lives scattered across many systems, investigation is slow, manual, and humans miss cross-source connections. Framed domain-generally.
 2. **Architecture** — specialized agents (one per source, each fluent in its system's query model) → correlation → **validation (self-check)** → redaction → structured output. → *canonical pipeline diagram* (with the validation feedback loop).
@@ -95,6 +97,8 @@ From the portfolio spec §2, all still binding:
 
 **Coda — Generalizing it** — the pattern (specialized agents + correlation + self-validation + structured output + blind evals + right-sizing) transfers to any multi-source reasoning problem. *"This helps me; maybe it helps you."* Optional in-voice "PDF edition coming" note.
 
+**Optional — FAQ.** A short Q&A taking the smart-skeptic objections head-on (*Isn't measuring overkill? Why not one big do-everything prompt? Local vs. cloud — why bother?*). The one sanctioned place for enumerated, direct-answer structure; also skim-friendly. Seeded directly by Appendix A.
+
 **Two confidence layers (the bridge):** runtime self-validation (Act I §6) + offline blind-fixture evaluation (Act II) = defense in depth on correctness. This linkage is the spine of the rigor story.
 
 **Scope target:** ~1,500–2,500 words.
@@ -107,11 +111,13 @@ The paper's credibility rests on it reading as written by a sharp, skeptical eng
 
 **Voice is audience-dependent — the target is a register, not a monolith.** Dylan code-switches heavily by audience (English-major background, wide reading), so there is no single "Dylan voice" to extract — there's the register he'd pick for *this* audience and genre. **Target register for this paper:** a senior engineer explaining a system they built and were skeptical enough to measure — first person, technically precise, confident without marketing gloss, dry wit in service of clarity, essayistic enough to read well (it's *Notes*, not a corporate PDF). Authentic samples should match *this* register (his technical/professional writing), not his casual or literary range. *(Register confirmed with Dylan — see §9 if still open.)*
 
-**Voice anchors** (provisional — confirm against real samples + edits, within the target register above):
-- First person, plainspoken, concrete — names the specific tool and the specific tradeoff instead of abstractions.
-- Dry, a little irreverent; confident without grandiosity. Short, punchy contrasts over hedged balance.
-- Genuinely skeptical of AI hype; takes a position rather than both-sidesing.
-- Rhythm varies — short declaratives next to longer sentences. Not every paragraph the same length or shape.
+**Voice anchors** (calibrated to Dylan's cold sample, Appendix A):
+- **Conviction-first openers** — lead a point with a flat, first-person stance, then justify it: *"I don't like waste." "I don't trust one time outputs."*
+- **Accretive, cumulative cadence** — reasoning builds clause by clause inside long sentences; NOT chopped into staccato. (Corrects an earlier mis-call toward "short, punchy.") The published paper gets normal grammar cleanup — comma splices and run-ons fixed through real editorial rounds — but the flowing, additive *thinking* is preserved. Voice lives in the reasoning and diction, not in literal first-draft grammar.
+- **Plain, precise diction; deflating word choice** — everyday analogies ("the right tool for the job"), un-awed framings of LLMs ("just seek positive responses to their outputs"), deliberately precise terms over hype ("computational models," not "AI").
+- **Efficiency / anti-waste worldview** — the real driver of the eval work isn't rigor-as-virtue, it's refusing to waste compute, money, and time on tools that don't earn their keep.
+- **Skeptical, not cynical** — takes a position; doesn't both-sides everything.
+- **Minimal visible enumeration in the body** — no "first/second" scaffolding in prose; enumerated, direct-answer structure is confined to the optional FAQ (§5).
 
 **Banned LLM tells** (non-exhaustive; presence = defect):
 - *Vocabulary:* delve, leverage, robust, seamless, tapestry, testament, realm, "navigate the complexities," unlock, elevate, game-changer, "deep dive," "in today's…," "fast-paced."
@@ -160,7 +166,9 @@ Editorial-line SVG (`.astro` components) unless noted — items 2 and 3 are inte
 
 ## 9. Open / Deferred
 
-- **Target register confirmation** (§5.5) — proposed: senior-engineer-explaining-a-measured-system. Confirm/tune with Dylan; also identify which of his samples best match it.
+- **Target register** (§5.5) — calibrated to Appendix A: senior engineer, accretive cadence, conviction-first, anti-waste lens. (Resolved unless Dylan revises.)
+- **Thesis lean** (§5) — how far the anti-hype point of view surfaces: pure lens / a sharp line or two / more open. Confirm with Dylan.
+- **Include the FAQ?** (§5) — optional section; decide during authoring once body length is known.
 - Final title selection (during authoring).
 - Whether the in-voice "PDF edition coming" note ships now or waits for the PDF unit.
 - Exact denylist contents for the `verify-site.mjs` leak-pattern guard (assemble during implementation; keep the denylist itself out of git history if it contains the real names — or encode as hashes/an env-supplied list so the spec/verifier don't themselves leak).
@@ -169,3 +177,25 @@ Editorial-line SVG (`.astro` components) unless noted — items 2 and 3 are inte
 
 - Deploy = push to `main` (Cloudflare git-connected). Gates before any content change: `npm run check` + `npm run verify`.
 - Subagent-driven execution; **explicit "go" from the user before any build step** and before touching `main` (deploy-linked repo).
+
+## Appendix A — Voice Calibration Sample (working artifact)
+
+Working artifact for §5.5. Dylan writes a **cold, unedited** sample below; Claude reads it to extract the target register (rhythm, diction, openings, how far into the technical weeds, wit), then we discuss *before* any paper drafting. Not part of the shipped design — can graduate to a voice-samples reference later.
+
+**Prompt:**
+
+> A sharp friend — a strong generalist, not an AI specialist — asks you over a drink: *"Everyone and their dog is shipping AI tools right now. Why do you bother **measuring** yours? Isn't that overkill?"*
+>
+> Write your answer the way you'd actually write it — a few paragraphs, first draft, **no polishing**. Don't pitch athena specifically; just make your case.
+
+*Alt (same friend, same bar): "Why use a bunch of small specialized agents instead of one big do-everything prompt?"*
+
+**Guidance:** don't edit it — the unpolished first draft is the true voice signal. Length is whatever's natural. Write however you like; the fence below just marks the spot.
+
+**Dylan's response:**
+
+```text
+There are a couple of reasons, first I don't like waste, tokens are an easy abstraction but there's a real world resource cost to computation alonside the monetary cost. If a less sophisticated model can run a task at a lower cost, we should use it in the same way you'd want to use the right tool for any job. Second, I don't trust one time outputs, LLMs at their core just seek positive reponses to their outputs and it's very easy to get a few well formed responses with a bad baseline assumption that deviates in a catastrophic way down the line, continuously measuring and auditing the outputs is the only way to ensure the tool is actually helping and not just burning tokens and wasting time. Measuring local vs cloud is part of that same effort, if we can get away with not spending cloud resources we can save both time and resources, even if the local models aren't as powerful there's a real benefit to confirming that.
+
+To address your second question, specialized agents help with preventing drift. If I need to check BigQuery I need the output to be predictable and not lose time to prompting a general agent back into shape, especially with the quirks of our specific database. An investigation pipeline needs to output a high quality reliable output, not constantly deviate each time.
+```
