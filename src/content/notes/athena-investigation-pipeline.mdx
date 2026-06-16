@@ -13,7 +13,11 @@ PLACEHOLDER — content authored in Phase 3.
 
 ## Why specialized agents
 
-PLACEHOLDER — first calibration section (Phase 2).
+{/* CALIBRATION DRAFT — Phase 2, Task 10. Dylan: edit this hard. Your edits are the voice signal — I learn your register from the diff, then draft the rest of the paper to match. Don't be precious about it. */}
+
+I reach for several small, specialized agents instead of one general one for the same reason I'd reach for the right tool instead of a Swiss Army knife: a general agent drifts. Point a do-everything prompt at six different systems and it holds its shape for a while, then quietly stops — it forgets the dialect quirks of one source, starts formatting another's output a little differently each run, and you end up spending your time prompting it back into line instead of getting answers. An investigation pipeline can't afford that. It has to return the same high-quality, predictable result every time, not something you re-check because the model wandered off.
+
+A specialized agent has a narrow job and a narrow context, and that narrowness is what keeps it honest. The agent that queries BigQuery only needs to know how to query BigQuery — its SQL dialect, the shape of the tables it's allowed to touch — and nothing about how Zendesk models a ticket or how Datadog stamps an event. Smaller surface, fewer ways to drift, and when something does go wrong it's obvious which agent to fix rather than which clause in a thousand-word prompt to go hunting through.
 
 ## Proving it works
 
