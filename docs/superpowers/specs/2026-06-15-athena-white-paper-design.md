@@ -101,12 +101,14 @@ From the portfolio spec §2, all still binding:
 
 ## 5.5 Voice & Anti-Slop Discipline (non-negotiable)
 
-The paper's credibility rests on it reading as written by a sharp, skeptical engineer — *Dylan* — not generated. AI-slop tells are a defect that undercuts the whole "real builder who measures his work" thesis. Grounded in the live site copy (Hero/About) and the communication log; refined by audit dimension 4 (tone/communication).
+The paper's credibility rests on it reading as written by a sharp, skeptical engineer — *Dylan* — not generated. AI-slop tells are a defect that undercuts the whole "real builder who measures his work" thesis.
 
-**Voice anchors** (from the live site and how Dylan actually writes):
+**Voice ground truth = Dylan's own writing, NOT the current site copy.** Caught in review: the live Hero/About copy was largely *Claude-drafted and accepted*, not authored by Dylan — so calibrating to it is circular (it reproduces Claude's approximation of his voice, the exact failure we're avoiding). The real reference is **(a) authentic samples Dylan wrote himself, and (b) his edits in the calibration loop below.** The "voice anchors" are provisional targets to be confirmed/corrected against those — not derived from the site.
+
+**Voice anchors** (provisional — confirm against real samples + edits):
 - First person, plainspoken, concrete — names the specific tool and the specific tradeoff instead of abstractions.
-- Dry, a little irreverent; confident without grandiosity. Short punchy contrasts land — cf. the site's *"The title says support; the habit says builder."*
-- Genuinely skeptical of AI hype — *"which is exactly why I measure what I build."* Takes a position; doesn't both-sides everything.
+- Dry, a little irreverent; confident without grandiosity. Short, punchy contrasts over hedged balance.
+- Genuinely skeptical of AI hype; takes a position rather than both-sidesing.
 - Rhythm varies — short declaratives next to longer sentences. Not every paragraph the same length or shape.
 
 **Banned LLM tells** (non-exhaustive; presence = defect):
@@ -118,11 +120,12 @@ The paper's credibility rests on it reading as written by a sharp, skeptical eng
 **Structural anti-slop:** lead with substance, not a windup. Let sections be uneven in length. Allow a dry aside or a sharp opinion. Prefer one concrete example to three generic claims. Cut any sentence that isn't carrying weight.
 
 **Authoring process — how we actually hit the voice, not just hope for it:**
-1. **Voice-calibration loop FIRST.** Before drafting the whole paper, draft *one* representative, judgment-heavy section (proposed: "Why specialized agents"). Dylan edits it heavily. The diff is studied, the concrete voice deltas extracted, and applied to every subsequent section. Front-loads calibration so the bulk draft lands close.
-2. **Substance originates with Dylan where possible.** Per section, Dylan can drop raw bullet thoughts / real phrasing to shape — rather than claims and tone invented whole-cloth. The thinking is his; the job is structure and flow.
-3. **Drafts are explicitly "raw for heavy edit,"** never presented as final. Dylan owns final copy.
-4. **Read the live site copy as the voice reference** before each drafting pass.
-5. **Dedicated anti-slop review pass** before any merge: an independent reviewer (and Dylan) reads specifically for AI tells against this list — separate from the correctness/sanitization review.
+1. **Collect authentic voice samples up front.** Dylan provides 1–3 pieces he genuinely wrote (a doc, post, comment, email — anything actually his), or writes a short raw passage. These are the voice ground truth — *not* the AI-drafted site copy.
+2. **Voice-calibration loop.** Draft *one* representative, judgment-heavy section (proposed: "Why specialized agents"). Dylan edits it heavily. The diff is studied, the concrete voice deltas extracted, and applied to every subsequent section. Front-loads calibration so the bulk draft lands close.
+3. **Substance originates with Dylan where possible.** Per section, Dylan can drop raw bullet thoughts / real phrasing to shape — rather than claims and tone invented whole-cloth. The thinking is his; the job is structure and flow.
+4. **Drafts are explicitly "raw for heavy edit,"** never presented as final. Dylan owns final copy.
+5. **Reference the authentic samples (step 1)** — not the AI-drafted site copy — before each drafting pass.
+6. **Dedicated anti-slop review pass** before any merge: an independent reviewer (and Dylan) reads specifically for AI tells against this list — separate from the correctness/sanitization review.
 
 **Verification:** extend `verify-site.mjs` with a **banned-tell grep** over built `/notes/*` output, flagging the vocabulary/filler list above. Deterministic; complements the leak denylist (§7). It can't judge "slop" holistically — that's the review pass + Dylan's edit — but it catches the obvious tells mechanically.
 
