@@ -1,0 +1,8 @@
+---
+interface Props { abstract: string; }
+const { abstract } = Astro.props;
+---
+<div class="my-6 border-l-2 border-line pl-4">
+  <p class="font-mono text-xs uppercase tracking-widest text-faint">Abstract</p>
+  <p class="mt-1 text-muted leading-relaxed">{abstract}</p>
+</div>
