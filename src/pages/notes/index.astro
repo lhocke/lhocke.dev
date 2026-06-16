@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+
+const notes = (await getCollection("notes", ({ data }) => (import.meta.env.PROD ? !data.draft : true)))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<BaseLayout
+  title="Notes — Dylan Ishihara"
+  description="Occasional long-form on building and evaluating AI tooling, and the craft of software."
+>
+  <Nav />
+  <header class="mt-10 mb-8">
+    <p class="font-serif italic text-accent mb-2">Notes</p>
+    <h1 class="font-serif text-3xl font-semibold text-ink">Writing</h1>
+    <p class="mt-2 text-muted leading-relaxed">
+      Occasional long-form on building and evaluating AI tooling — and the craft of software that lasts.
+    </p>
+  </header>
+
+  {notes.length === 0 ? (
+    <p class="text-muted">Nothing published yet.</p>
+  ) : (
+    <ul class="list-none space-y-6 p-0">
+      {notes.map((note) => (
+        <li class="border-b border-line pb-6">
+          <a href={`/notes/${note.id}`} class="group block">
+            <h2 class="font-serif text-xl font-medium text-ink transition-colors group-hover:text-accent">{note.data.title}</h2>
+            <p class="mt-1 font-serif italic text-accent">{note.data.dek}</p>
+            <p class="mt-2 text-muted leading-relaxed">{note.data.abstract}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+
+  <Footer />
+</BaseLayout>

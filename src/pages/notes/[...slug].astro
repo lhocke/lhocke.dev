@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes"); // render all (incl. drafts) so pages are reachable
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const { Content, headings } = await render(note);
+---
+<ArticleLayout
+  title={note.data.title}
+  dek={note.data.dek}
+  abstract={note.data.abstract}
+  tags={note.data.tags}
+  headings={headings}
+>
+  <Content />
+</ArticleLayout>
