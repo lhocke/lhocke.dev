@@ -79,7 +79,7 @@ From the portfolio spec §2, all still binding:
 
 **Masthead:** title · dek · abstract box (2–3 sentence TL;DR, also meta description) · source-tag pills (BigQuery · Datadog · Slack · Notion · Jira · Zendesk).
 
-**Point of view (the lens, not a manifesto).** Dylan's core stance: *computational models have real benefit, but the current hype reads as a marketing-driven cash grab in search of a purpose* — a technology that could do real good, shoved at people who don't know what to do with it. athena is the counter-example to that complaint: AI aimed at a real, bounded, valuable problem and measured to prove it earns its place. The paper carries this as its **worldview** and may land one or two sharp lines of it — but stays on athena. The broader polemic (generative-art "cash grab," etc.) is **out of the body**: off-topic here and needlessly polarizing for a hiring reader. *(Exact lean — pure lens / a line or two / more open — confirmed with Dylan; see §9 if open.)*
+**Point of view (the lens, not a manifesto).** Dylan's core stance: *computational models have real benefit, but the current hype reads as a marketing-driven cash grab in search of a purpose* — a technology that could do real good, shoved at people who don't know what to do with it. athena is the counter-example to that complaint: AI aimed at a real, bounded, valuable problem and measured to prove it earns its place. The paper carries this as its **worldview** and lands **a couple of sharp lines** of it — stated plainly, once or twice — but stays on athena. The broader polemic (generative-art "cash grab," etc.) is **out of the body**: off-topic here and needlessly polarizing for a hiring reader. *(Lean RESOLVED — Dylan: "I don't hide it in my discussions but this is not the venue for that.")*
 
 **Act I — The system** *(build the thing)*
 1. **The problem** — when the answer lives scattered across many systems, investigation is slow, manual, and humans miss cross-source connections. Framed domain-generally.
@@ -167,7 +167,7 @@ Editorial-line SVG (`.astro` components) unless noted — items 2 and 3 are inte
 ## 9. Open / Deferred
 
 - **Target register** (§5.5) — calibrated to Appendix A: senior engineer, accretive cadence, conviction-first, anti-waste lens. (Resolved unless Dylan revises.)
-- **Thesis lean** (§5) — how far the anti-hype point of view surfaces: pure lens / a sharp line or two / more open. Confirm with Dylan.
+- **Thesis lean** (§5) — RESOLVED: a couple of sharp lines, no more. (Dylan: not the venue for the full polemic.)
 - **Include the FAQ?** (§5) — optional section; decide during authoring once body length is known.
 - Final title selection (during authoring).
 - Whether the in-voice "PDF edition coming" note ships now or waits for the PDF unit.
