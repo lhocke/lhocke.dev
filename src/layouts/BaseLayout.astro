@@ -6,11 +6,13 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  wide?: boolean;
 }
 
 const {
   title = "Dylan Ishihara — Developer-turned-support-leader who never stopped building",
   description = "Dylan Ishihara is a full-stack developer turned technical-support leader who builds and evaluates production AI tooling. Oakland, CA.",
+  wide = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -33,7 +35,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body class="bg-paper text-ink font-sans antialiased">
-    <main class="mx-auto max-w-2xl px-6 py-12 sm:py-16">
+    <main class:list={["mx-auto px-6 py-12 sm:py-16", wide ? "max-w-5xl" : "max-w-2xl"]}>
       <slot />
     </main>
   </body>

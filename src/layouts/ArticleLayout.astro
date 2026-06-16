@@ -1,0 +1,41 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import Footer from "../components/Footer.astro";
+import Abstract from "../components/notes/Abstract.astro";
+import SourceTags from "../components/notes/SourceTags.astro";
+import OnThisPage from "../components/notes/OnThisPage.astro";
+
+interface Heading { depth: number; slug: string; text: string; }
+interface Props {
+  title: string;
+  dek: string;
+  abstract: string;
+  tags: string[];
+  headings: Heading[];
+  description?: string;
+}
+const { title, dek, abstract, tags, headings, description } = Astro.props;
+---
+<BaseLayout title={`${title} — Dylan Ishihara`} description={description ?? abstract} wide>
+  <a href="/notes" class="font-mono text-xs text-faint transition-colors hover:text-ink">← notes</a>
+
+  <header class="mt-6 mb-8 border-b border-line pb-8">
+    <h1 class="font-serif text-3xl font-semibold text-ink sm:text-4xl">{title}</h1>
+    <p class="mt-2 font-serif italic text-accent">{dek}</p>
+    <Abstract abstract={abstract} />
+    <SourceTags tags={tags} />
+  </header>
+
+  <div class="lg:grid lg:grid-cols-[11rem_1fr] lg:gap-12">
+    <div class="mb-8 lg:mb-0">
+      <div class="lg:sticky lg:top-12">
+        <OnThisPage headings={headings} />
+      </div>
+    </div>
+    <article class="note-prose max-w-2xl">
+      <slot />
+    </article>
+  </div>
+
+  <Footer />
+</BaseLayout>
