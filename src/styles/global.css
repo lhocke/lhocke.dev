@@ -72,3 +72,23 @@ html {
   font-style: italic;
   color: var(--color-faint);
 }
+.note-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+.note-prose th,
+.note-prose td {
+  border: 1px solid var(--color-line);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.note-prose th {
+  font-weight: 600;
+  color: var(--color-ink);
+  background: #f5f5f4;            /* stone-100 header tint */
+  border-bottom: 1px solid var(--color-ink);
+}
+.note-prose td { color: var(--color-muted); }
