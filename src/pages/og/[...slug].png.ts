@@ -4,7 +4,7 @@
 //         dist/og/notes/<noteSlug>.png
 // Zero client JS — runs only during astro build.
 
-import type { APIRoute, GetStaticPaths } from 'astro';
+import type { APIRoute } from 'astro';
 import type { Font as SatoriFont } from 'satori';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -37,13 +37,15 @@ const FONTS: SatoriFont[] = [
 // getStaticPaths — enumerates every card slug
 // ---------------------------------------------------------------------------
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
   const cards = await allCards();
   return cards.map(({ slug, content }) => ({
     params: { slug },
-    props: content,
+    // Astro's GetStaticPaths requires props to be index-signature compatible;
+    // CardContent is a closed interface, so double-cast through unknown.
+    props: content as unknown as Record<string, unknown>,
   }));
-};
+}
 
 // ---------------------------------------------------------------------------
 // Card layout builder — plain object tree (no JSX, no extra deps)
@@ -198,7 +200,8 @@ export const GET: APIRoute = async ({ props }) => {
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  return new Response(pngBuffer, {
+  // Uint8Array is valid as BodyInit; Node Buffer is not accepted by the TS lib types
+  return new Response(new Uint8Array(pngBuffer), {
     headers: { 'Content-Type': 'image/png' },
   });
 };
