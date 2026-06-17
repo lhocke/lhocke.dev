@@ -13,10 +13,18 @@ interface Props {
   tags: string[];
   headings: Heading[];
   description?: string;
+  publishDate?: Date;
 }
-const { title, dek, abstract, tags, headings, description } = Astro.props;
+const { title, dek, abstract, tags, headings, description, publishDate } = Astro.props;
 ---
-<BaseLayout title={`${title} — Dylan Ishihara`} description={description ?? abstract} wide>
+<BaseLayout
+  title={`${title} — Dylan Ishihara`}
+  description={description ?? abstract}
+  wide
+  ogType="article"
+  ogImageAlt={title}
+  publishDate={publishDate}
+>
   <a href="/notes" class="font-mono text-xs text-faint transition-colors hover:text-ink">← notes</a>
 
   <header class="mt-6 mb-8 border-b border-line pb-8">

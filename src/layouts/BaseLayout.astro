@@ -2,20 +2,33 @@
 import "@fontsource-variable/inter";
 import "@fontsource-variable/newsreader";
 import "../styles/global.css";
+import { ogImagePath } from "../lib/og.ts";
 
 interface Props {
   title?: string;
   description?: string;
   wide?: boolean;
+  ogType?: string;
+  ogImageAlt?: string;
+  publishDate?: Date;
 }
 
 const {
   title = "Dylan Ishihara — Developer-turned-support-leader who never stopped building",
   description = "Dylan Ishihara is a full-stack developer turned technical-support leader who builds and evaluates production AI tooling. Oakland, CA.",
   wide = false,
+  ogType = "website",
+  ogImageAlt,
+  publishDate,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+
+// Derive the og:image absolute URL from the current pathname.
+// ogImagePath() normalizes trailing slashes and falls back to /og/home.png.
+const ogImageRelative = ogImagePath(Astro.url.pathname);
+const ogImage = new URL(ogImageRelative, Astro.site).toString();
+const resolvedOgImageAlt = ogImageAlt ?? title;
 ---
 <!doctype html>
 <html lang="en">
@@ -28,11 +41,20 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Open Graph / Twitter -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content={resolvedOgImageAlt} />
+    {publishDate && (
+      <meta property="article:published_time" content={publishDate.toISOString()} />
+    )}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
   </head>
   <body class="bg-paper text-ink font-sans antialiased">
     <main class:list={["mx-auto px-6 py-12 sm:py-16", wide ? "max-w-5xl" : "max-w-2xl"]}>
